@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { userInfo } from "@src/utils/types";
+import { UserInfo } from "@src/utils/types";
 import { RootState } from "../store";
 
 interface AuthState {
     isAuthenticated: boolean;
-    user: userInfo | null;
+    user: UserInfo | null;
 }
 
 const initialState = {
@@ -21,7 +21,6 @@ const authSlice = createSlice({
             state.user = action.payload;
         },
         loadUserFail: (state) => {
-            console.log("faillle");
             state.isAuthenticated = false;
         },
     },
@@ -32,4 +31,4 @@ export const { loadUserSuccess, loadUserFail } = actions;
 export default reducer;
 
 export const selectUserInfo = (state: RootState) => state.auth.user;
-export const selectUserInfosAuthenticated = (state: RootState) => state.auth.isAuthenticated;
+export const selectIsAuthenticated = (state: RootState) => state.auth.isAuthenticated;
