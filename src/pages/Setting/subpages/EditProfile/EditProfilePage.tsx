@@ -1,6 +1,7 @@
-import { BasicInfo, EditAvatar } from "./components";
+import { BasicInfo, ContactInfo, EditAvatar } from "./components";
+import React from "react";
 
-const EditProfilePage = () => {
+const EditProfilePage: React.FC = () => {
     return (
         <div>
             <div className="flex flex-col items-center">
@@ -16,7 +17,7 @@ const EditProfilePage = () => {
             </div>
 
             <div className="flex flex-col p-4 m-10 border max-w-[800px]  mx-auto rounded-md">
-                <h2 className="text-3xl font-semibold text-primary">Basic information</h2>
+                <h2 className="text-3xl font-bold text-primary">Basic information</h2>
                 <div className="flex flex-row items-center mt-4 p-5">
                     <div className="flex-1">Profile photo</div>
                     <div>
@@ -24,6 +25,10 @@ const EditProfilePage = () => {
                     </div>
                 </div>
                 <BasicInfo />
+            </div>
+            <div className="flex flex-col p-4 m-10 border max-w-[800px]  mx-auto rounded-md">
+                <h2 className="text-3xl font-bold text-primary mb-20">Contact information</h2>
+                <ContactInfo />
             </div>
         </div>
     );

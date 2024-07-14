@@ -1,8 +1,12 @@
-import { Calendar, GraduationCapIcon, HomeIcon, ListTodo, SettingsIcon } from "lucide-react";
+import { BookUserIcon, Calendar, GraduationCapIcon, HomeIcon, ListTodo, SettingsIcon } from "lucide-react";
 import { AccordionContent, Accordion, AccordionItem, AccordionTrigger } from "../ui/accordion";
 import SettingSidebar from "@src/pages/Setting/components/SettingSidebar/SettingSidebar";
 import routes from "@src/configs/router";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useAppSelector } from "@src/hooks/appHook";
+import { selectClassList } from "@src/store/reducers/classSlice";
+import ClassSidebarItem from "./ClassSidebarItem";
+import { useState } from "react";
 
 const Sicebar = ({ isShowSideBar }: { isShowSideBar: boolean }) => {
     const topContents = [
@@ -17,9 +21,13 @@ const Sicebar = ({ isShowSideBar }: { isShowSideBar: boolean }) => {
             id: 2,
             icon: <Calendar />,
             title: "Calendar",
-            path: routes.HOME,
+            path: "#Calendar",
         },
     ];
+
+    const location = useLocation();
+    const classList = useAppSelector(selectClassList);
+    const [teachingClasses] = useState(classList.filter((item) => item.isTeacher));
 
     return (
         <div
@@ -32,8 +40,9 @@ const Sicebar = ({ isShowSideBar }: { isShowSideBar: boolean }) => {
                     return (
                         <Link key={item.id} to={item.path}>
                             <div
-                                key={item.id}
-                                className="flex items-center gap-2 text-base font-semibold px-6 py-3 group cursor-pointer hover:bg-muted max-w-[300px] truncate mr-3 rounded-e-full"
+                                className={`${
+                                    location.pathname === item.path && "bg-muted"
+                                } flex items-center gap-2 text-base font-semibold px-6 py-3 group cursor-pointer hover:bg-muted max-w-[300px] truncate mr-3 rounded-e-full`}
                             >
                                 {item.icon}
                                 <span className={`group-hover:underline ${!isShowSideBar && "hidden"}`}>
@@ -44,6 +53,25 @@ const Sicebar = ({ isShowSideBar }: { isShowSideBar: boolean }) => {
                     );
                 })}
             </div>
+            {teachingClasses.length > 0 && (
+                <div className="border-b border-border py-3">
+                    <Accordion type="single" collapsible>
+                        <AccordionItem value="item-1" className="border-transparent">
+                            <AccordionTrigger className="text-base font-semibold px-6 py-3 group cursor-pointer hover:bg-muted max-w-[300px] truncate mr-3 rounded-e-full border-transparent">
+                                <div className="flex items-center gap-2">
+                                    <BookUserIcon />
+                                    <span className={`${!isShowSideBar && "hidden"}`}>Teaching</span>
+                                </div>
+                            </AccordionTrigger>
+                            <AccordionContent>
+                                {teachingClasses.map((item) => {
+                                    return <ClassSidebarItem key={item.id} item={item} isShowSideBar={isShowSideBar} />;
+                                })}
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
+                </div>
+            )}
             <div className="border-b border-border py-3">
                 <Accordion type="single" collapsible>
                     <AccordionItem value="item-1" className="border-transparent">

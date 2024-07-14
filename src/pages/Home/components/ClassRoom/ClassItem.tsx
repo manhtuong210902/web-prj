@@ -1,17 +1,26 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@src/components/ui/avatar";
 import { Popover, PopoverContent, PopoverTrigger } from "@src/components/ui/popover";
+import { useAppDispatch } from "@src/hooks/appHook";
+import { setCurrClass } from "@src/store/reducers/classSlice";
 import { getFirstCharacter } from "@src/utils/lib";
+import { ClassInfo } from "@src/utils/types";
 import { MoreVertical } from "lucide-react";
-
-export type ClassInfo = {
-    name: string;
-    creator: string;
-    avatar: string;
-};
+import { useNavigate } from "react-router-dom";
 
 const ClassItem = ({ item }: { item: ClassInfo }) => {
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+
+    const handleClickClassItem = () => {
+        dispatch(setCurrClass(item));
+        navigate(`/class/${item.id}`);
+    };
+
     return (
-        <div className="mb-6 rounded-md border border-border shadow-sm w-[300px] overflow-hidden">
+        <div
+            className="mb-6 rounded-md border border-border shadow-md w-[300px] overflow-hidden cursor-pointer hover:shadow-lg"
+            onClick={handleClickClassItem}
+        >
             <div className="bg-primary p-4 flex flex-col text-base text-white relative">
                 <div className="flex justify-between items-center">
                     <h3 className="font-semibold text-lg capitalize truncate">{item.name}</h3>
@@ -31,7 +40,7 @@ const ClassItem = ({ item }: { item: ClassInfo }) => {
                 <span className="text-sm">{item.creator}</span>
                 <div className="absolute right-5 top-full -translate-y-1/2">
                     <Avatar>
-                        <AvatarImage src={item.avatar} />
+                        <AvatarImage src={item?.avatar} />
                         <AvatarFallback className="font-semibold text-primary">
                             {getFirstCharacter(item.creator)}
                         </AvatarFallback>
