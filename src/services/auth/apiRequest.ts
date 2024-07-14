@@ -23,26 +23,12 @@ export const loaderUser = async (dispatch: any) => {
     }
 };
 
-export const registerUser = async (dispatch: any, params: any) => {
+export const registerUser = async (params: any) => {
     try {
         const res = await authService.register(params);
-        const data = res.data.data;
-        LocalStorage.setToken(data.accessToken);
-        LocalStorage.setRefreshToken(data.refreshToken);
-        LocalStorage.setUserId(data.userId);
-
-        const user: UserInfo = {
-            id: data.userId,
-            username: data.username,
-            imgUrl: data.imgUrl,
-        };
-
-        dispatch(loadUserSuccess(user));
-        return user;
+        return res.data;
     } catch (error: any) {
-        LocalStorage.clearToken();
-        dispatch(loadUserFail());
-        return error.response.data;
+        return error?.response?.data;
     }
 };
 
@@ -58,6 +44,7 @@ export const loginUser = async (dispatch: any, params: any) => {
             id: data.userId,
             username: data.username,
             imgUrl: data.imgUrl,
+            ...data,
         };
 
         dispatch(loadUserSuccess(user));
@@ -65,7 +52,7 @@ export const loginUser = async (dispatch: any, params: any) => {
     } catch (error: any) {
         LocalStorage.clearToken();
         dispatch(loadUserFail());
-        return error.response.data;
+        return error?.response?.data;
     }
 };
 
