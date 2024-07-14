@@ -6,15 +6,14 @@ import {
     NavigationMenuList,
     NavigationMenuTrigger,
 } from "@src/components/ui/navigation-menu";
-import { Button } from "@src/components/ui/button";
+import { Button } from "../ui/button";
 import BookImg from "@image/img_book.png";
 import { Link } from "react-router-dom";
-import { navigationMenuTriggerStyle } from "@src/components/ui/navigation-menu";
+import { navigationMenuTriggerStyle } from "../ui/navigation-menu";
 import React from "react";
 import { cn } from "@src/utils/lib";
-import routes from "@src/configs/router";
 
-const Header = () => {
+const HeaderLanding = () => {
     const components: { title: string; description: string }[] = [
         {
             title: "Mathematics",
@@ -44,23 +43,21 @@ const Header = () => {
 
     return (
         <div className="h-[60px] shadow-md">
-            <div className="w-full h-full flex items-center justify-between max-w-[1200px] mx-auto px-3 md:px-0">
-                <Link to={routes.LANDINGPAGE}>
-                    <div className="flex items-center gap-2">
-                        <img src={BookImg} alt="" className="w-8 h-8 md:w-9 md:h-9 object-cover" />
-                        <h1 className="font-extrabold text-xl md:text-2xl text-primary">Education</h1>
-                    </div>
-                </Link>
+            <div className="w-full h-full flex items-center justify-between max-w-[1200px] mx-auto">
+                <div className="flex items-center gap-2">
+                    <img src={BookImg} alt="" className="w-9 h-9 object-cover" />
+                    <h1 className="font-extrabold text-2xl text-primary">Education</h1>
+                </div>
 
-                <NavigationMenu className="hidden md:block">
+                <NavigationMenu>
                     <NavigationMenuList>
                         <NavigationMenuItem>
-                            <Link to={routes.HOME}>
+                            <Link to={"/home"}>
                                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>Home</NavigationMenuLink>
                             </Link>
                         </NavigationMenuItem>
                         <NavigationMenuItem>
-                            <Link to={routes.HOME}>
+                            <Link to={"/home"}>
                                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                                     About us
                                 </NavigationMenuLink>
@@ -82,12 +79,8 @@ const Header = () => {
                 </NavigationMenu>
 
                 <div className="flex items-center gap-3">
-                    <Link to={routes.SIGNUP}>
-                        <Button>Sign Up</Button>
-                    </Link>
-                    <Link to={routes.LOGIN}>
-                        <Button variant="outline">Log In</Button>
-                    </Link>
+                    <Button>Sign Up</Button>
+                    <Button variant="outline">Log In</Button>
                 </div>
             </div>
         </div>
@@ -117,4 +110,4 @@ const ListItem = React.forwardRef<React.ElementRef<"a">, React.ComponentPropsWit
     }
 );
 
-export default Header;
+export default HeaderLanding;
