@@ -4,67 +4,55 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Link, useNavigate } from "react-router-dom";
-import { loginSchema } from "@src/utils/schema";
-import { useAppDispatch } from "@src/hooks/appHook";
-import { loginUser } from "@src/services/auth/apiRequest";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { resetPassword } from "@src/services/auth/apiRequest";
 import routes from "@src/configs/router";
-import LoginSocial from "../components/LoginSoical/LoginSocial";
 import { toast } from "react-toastify";
+import { resetPasswordSchema } from "@src/utils/schema";
 
-export default function Login() {
-    const dispatch = useAppDispatch();
+export default function ResetPassword() {
+    const [searchParams] = useSearchParams();
+    const token = searchParams.get("token");
     const navigate = useNavigate();
-    const form = useForm<z.infer<typeof loginSchema>>({
-        resolver: zodResolver(loginSchema),
+    const email = searchParams.get("email");
+
+    const form = useForm<z.infer<typeof resetPasswordSchema>>({
+        resolver: zodResolver(resetPasswordSchema),
         defaultValues: {
-            username: "",
             password: "",
+            confirmPassword: "",
         },
     });
 
-    async function onSubmit(values: z.infer<typeof loginSchema>) {
-        const res = await loginUser(dispatch, values);
-        if (res.error) {
+    async function onSubmit(values: z.infer<typeof resetPasswordSchema>) {
+        if (!token || !email) {
+            toast.error("Missing data !!");
+            return;
+        }
+
+        const res = await resetPassword({
+            token,
+            email,
+            newPassword: values.password,
+        });
+
+        if (res?.error) {
             toast.error(res.message);
             return;
         }
 
-        navigate(routes.HOME);
+        toast.success(res.message);
+        navigate(routes.LOGIN);
     }
     return (
         <div className="max-w-2xl xl:px-[80px] lg:px-[40px] py-[40px] px-3">
             <div className="flex flex-col">
                 <div className="flex flex-col md:flex-row gap-2 justify-between items-center">
-                    <div className="text-2xl text-primary font-bold">Log in to Education</div>
-                    <span className="text-[#031FEF] underline cursor-pointer">
-                        <Link to={routes.SIGNUP}>Create new account</Link>
-                    </span>
+                    <div className="text-2xl text-primary font-bold">Reset Password</div>
                 </div>
-
-                <LoginSocial />
-
-                <div className="mt-4 flex justify-center text-[12px] text-[#BFBFBF]">Or log in with username</div>
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 flex flex-col gap-6">
-                        <FormField
-                            control={form.control}
-                            name="username"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="text-primary">Username</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            className="focus:border-primary focus-visible:ring-transparent"
-                                            placeholder="Enter your username"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
                         <FormField
                             control={form.control}
                             name="password"
@@ -83,12 +71,35 @@ export default function Login() {
                                 </FormItem>
                             )}
                         />
+                        <FormField
+                            control={form.control}
+                            name="confirmPassword"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-primary">Confirm password</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="password"
+                                            className="focus:border-primary focus-visible:ring-transparent"
+                                            placeholder="Enter your password"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                        <span className="text-[#031FEF] underline cursor-pointer text-right">
-                            <Link to={routes.REQUEST_RESET_PASSWORD}>Forgot password?</Link>
-                        </span>
+                        <div className="mb-2 flex flex-col gap-2 text-sm list-disc">
+                            <span>At least 8 characters</span>
+                            <span>Contain 1 uppercase letter (A-Z)</span>
+                            <span>Contain 1 lowercase letter (a-z)</span>
+                            <span>Contain 1 special number (0-9)</span>
+                            <span>Contain 1 special symbol (@#$!%*?&)</span>
+                        </div>
+
                         <Button type="submit" className="text-base">
-                            Login
+                            Confirm
                         </Button>
                     </form>
                 </Form>
